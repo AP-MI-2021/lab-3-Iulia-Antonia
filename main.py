@@ -121,25 +121,87 @@ def test_get_longest_digit_count_desc():
     assert get_longest_digit_count_desc([1, 34, 1000, 99, 3000, 1234, 456, 34, 7, 9]) == [3000, 1234, 456, 34, 7, 9]
 
 
+def ordine_crescatoare(n):
+    """
+    Verifica daca cifrele din n sunt in ordine crescatoare
+    -consider ordine crescatoare oricare a,b cu a <= b
+    :param n: n
+    :return: rezultatul verificarii
+    """
+    m = n
+    while m:
+        if m % 10 < (m // 10) % 10:
+            return False
+        m //= 10
+    return True
+
+
+def concatenare_lista(lista):
+    """
+    Concateneaza elementele unei liste
+    :param lista: lista- o lista de int-uri
+    :return: concatenare - lista concatenata ca un int
+    """
+    str_conc = ''
+    for element in lista:
+        str_conc = str_conc + str(element)
+    concatenare = int(str_conc)
+    return concatenare
+
+
+def get_longest_concat_digits_asc(lista):
+    """
+    Gaseste si returneaza cea mai lunga subsecventa a listei pt care concatenarea numerelor din subsecvență are
+     cifrele în ordine crescătoare.
+    :param lista: lista in care va cauta subsecventa cu proprietatea ceruta
+    :return: secventa maxima care indeplineste proprietatea ceruta
+    """
+    secventa_maxima = []
+    for start in range(0, len(lista)):
+        for end in range(start + 1, len(lista) + 1):
+            numar = concatenare_lista(lista[start:end])
+            if ordine_crescatoare(numar):
+                secventa_maxima.append(lista[start:end])
+    secventa_maxima_finala = []
+    for lista_elemente in secventa_maxima:
+        if len(lista_elemente) > len(secventa_maxima_finala):
+            secventa_maxima_finala = lista_elemente
+    return secventa_maxima_finala
+
+
+def test_get_longest_concat_digits_asc():
+    assert get_longest_concat_digits_asc([1, 2, 45, 567]) == [1, 2, 45, 567]
+    assert get_longest_concat_digits_asc([7, 23, 67]) == [23, 67]
+    assert get_longest_concat_digits_asc([81, 23, 45, 890]) == [23, 45]
+    assert get_longest_concat_digits_asc([987, 122, 2, 22, 7]) == [122, 2, 22, 7]
+    assert get_longest_concat_digits_asc([1, 23, 45, 5, 1, 7, 35, 555, 5, 7, 9]) == [35, 555, 5, 7, 9]
+    assert get_longest_concat_digits_asc([45, 566, 78, 98, 1, 24, 67]) == [45, 566, 78]
+    assert get_longest_concat_digits_asc([879]) == []
+
+
 def main():
+    lista = []
     while True:
         print("""
         1.Citire lista
         2.Determinarea celei mai lungi subsecvente pentru care suma numerelor este număr prim.
         3.Determinarea celei mai lungi subsecvente pentru care numărul de cifre este în ordine descrescătoare 
-        (consideram ca respecta proprietate si urmatoarele tipuri de liste:
-        -->exemple: [abc, ab, ad, gf, e, r, k, i] sau [a, b, c], o litera reprezinta o cifra)
-        4.Exit
+            (consideram ca respecta proprietate si urmatoarele tipuri de liste:
+             -->exemple: [abc, ab, ad, gf, e, r, k, i] sau [a, b, c], o litera reprezinta o cifra)
+        4.Determinarea celei mai lungi subsecvente pentru care concatenarea numerelor din subsecvență are cifrele 
+            în ordine crescătoare.
+        5.Exit
         """)
-        lista = []
         obtiune = input('Alege optiunea: ')
         if obtiune == '1':
-            citire_lista()
+            lista = citire_lista()
         elif obtiune == '2':
             print(get_longest_sum_is_prime(lista))
         elif obtiune == '3':
             print(get_longest_digit_count_desc(lista))
         elif obtiune == '4':
+            print(get_longest_concat_digits_asc(lista))
+        elif obtiune == '5':
             break
         else:
             print('Obtiune invalida')
@@ -147,4 +209,5 @@ def main():
 
 test_get_longest_digit_count_desc()
 test_get_longest_sum_is_prime()
+test_get_longest_concat_digits_asc()
 main()
